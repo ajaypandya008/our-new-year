@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Our New Year ❤️</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
+    <style>
+        :root {
+            --color-bg: #fff0f3;
+            --color-bg-deep: #ffccd5;
+            --color-primary: #ff4d6d;
+            --color-secondary: #c9184a;
+            --color-text: #590d22;
+            --color-text-light: #800f2f;
+            --color-white: #ffffff;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Inter', sans-serif;
+            --ease-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            overflow: hidden;
+            /* Prevent scrolling, controlled by phases */
+            height: 100vh;
+            width: 100vw;
+        }
+
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* BACKGROUND */
+        .bg-gradient {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #fff0f3 0%, #ffccd5 100%);
+            z-index: -1;
+        }
+
+        .floating-hearts-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* PHASES */
+        .phase {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s;
+            padding: 20px;
+            z-index: 10;
+        }
+
+        .phase.active {
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
+        }
+
+        .phase.hidden {
+            display: none;
+            /* Hard hide for non-active phases if needed */
+        }
+
+        /* UTILS */
+        .content-center {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* COMPONENTS */
+        .title {
+            font-family: var(--font-heading);
+            font-size: 3rem;
+            color: var(--color-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--color-text-light);
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .message {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: var(--font-heading);
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+            transition: transform 0.2s var(--ease-elastic), box-shadow 0.2s;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 5px rgba(255, 77, 109, 0.3);
+        }
+
+        .tap-hint {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.6;
+            animation: pulse 2s infinite;
+        }
+
+        /* PHASE 2 SPECIFIC */
+        .big-wish {
+            font-family: var(--font-heading);
+            font-size: 4rem;
+            color: var(--color-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .typewriter-container {
+            min-height: 100px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .btn-icon {
+            background: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .btn-text {
+            background: none;
+            border: none;
+            color: var(--color-primary);
+            font-size: 1.1rem;
+            margin-top: 2rem;
+            cursor: pointer;
+            border-bottom: 1px solid transparent;
+        }
+
+        .btn-text:active {
+            opacity: 0.7;
+        }
+
+        /* PHASE 3: CARDS */
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px auto;
+            max-width: 400px;
+        }
+
+        .card {
+            background: white;
+            height: 120px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:active {
+            transform: scale(0.95);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            backface-visibility: hidden;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card-front {
+            background: white;
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            transform: rotateY(0deg);
+        }
+
+        .card-back {
+            background: var(--color-primary);
+            color: white;
+            transform: rotateY(180deg);
+            font-size: 1rem;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .card.flipped .card-front {
+            transform: rotateY(-180deg);
+        }
+
+        .card.flipped .card-back {
+            transform: rotateY(0deg);
+        }
+
+        /* PHASE 4: SCATTER */
+        .scatter-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .photo-card {
+            position: absolute;
+            width: 140px;
+            height: 180px;
+            background: white;
+            padding: 10px 10px 30px 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transform: rotate(var(--r));
+            transition: transform 0.1s;
+            cursor: grab;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .photo-card:active {
+            cursor: grabbing;
+            transform: scale(1.05) rotate(0deg);
+            z-index: 100 !important;
+        }
+
+        .photo-img {
+            width: 100%;
+            height: 100%;
+            background-color: #eee;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        .like-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            transition: transform 0.2s;
+        }
+
+        .like-btn.liked {
+            transform: scale(1.3);
+        }
+
+        .bottom-controls {
+            position: absolute;
+            bottom: 30px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            pointer-events: none;
+            /* Let clicks pass through to scatter items if needed, but button needs pointer-events auto */
+        }
+
+        .bottom-controls button {
+            pointer-events: auto;
+        }
+
+        .small-btn {
+            padding: 10px 25px;
+            font-size: 1rem;
+        }
+
+        /* PHASE 5: ALBUMS */
+        .albums-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            width: 100%;
+        }
+
+        .album-preview {
+            width: 200px;
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .album-preview:hover {
+            transform: translateY(-5px);
+        }
+
+        .photo-card.liked {
+            /* Romantic gradient border effect */
+            background: linear-gradient(#fff, #fff) padding-box,
+                linear-gradient(45deg, #ff9a9e, #fad0c4, #ffccd5, #ff4d6d) border-box;
+            border: 4px solid transparent;
+            transform: scale(1.05);
+            z-index: 50;
+            box-shadow: 0 15px 30px rgba(255, 77, 109, 0.4);
+        }
+
+        .album-cover {
+            width: 100%;
+            height: 150px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* MODAL */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 240, 243, 0.95);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            transition: opacity 0.3s;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--color-primary);
+        }
+
+        .modal-content {
+            width: 90%;
+            height: 70%;
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 20px;
+            scroll-snap-type: x mandatory;
+        }
+
+        .album-photo {
+            flex: 0 0 80%;
+            height: 100%;
+            background: white;
+            border-radius: 10px;
+            scroll-snap-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        /* PHASE 6: FUN ZONE */
+        .fun-container {
+            height: 300px;
+            position: relative;
+            width: 100%;
+        }
+
+        .floating-btn {
+            position: absolute;
+            font-size: 3rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .floating-btn:active {
+            transform: scale(0.9);
+        }
+
+        /* PHASE 7: GIFT */
+        .gift-box {
+            font-size: 8rem;
+            cursor: pointer;
+            transition: transform 0.1s;
+            user-select: none;
+        }
+
+        .gift-box:active {
+            transform: scale(0.95);
+        }
+
+        .progress-dots {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .dot {
+            width: 15px;
+            height: 15px;
+            background: #ffccd5;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .dot.active {
+            background: var(--color-primary);
+            transform: scale(1.2);
+        }
+
+        /* PHASE 8: CAKE */
+        .cake-container {
+            cursor: pointer;
+            margin: 30px 0;
+        }
+
+        .cake {
+            font-size: 6rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .candle {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 30px;
+            background: red;
+        }
+
+        .flame {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            animation: flicker 0.5s infinite alternate;
+        }
+
+        .flame.out {
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.5s;
+        }
+
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        /* PHASE 9: EXPLOSION */
+        .explosion-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .msg-card {
+            position: absolute;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-width: 200px;
+            font-size: 1rem;
+            text-align: center;
+            opacity: 0;
+        }
+
+        /* PHASE 10: FINAL */
+        .heart-album-shape {
+            font-size: 8rem;
+            animation: beat 2s infinite;
+        }
+
+        .final-buttons {
+            margin-top: 30px;
+        }
+
+        /* ANIMATIONS */
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.6;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes flicker {
+            0% {
+                transform: translateX(-50%) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateX(-50%) scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes beat {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            10% {
+                transform: scale(1.1);
+            }
+
+            20% {
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: 2.5rem;
+            }
+
+            .big-wish {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- BACKGROUND ELEMENTS -->
+        <div class="bg-gradient"></div>
+        <div class="floating-hearts-container" id="bgHearts"></div>
+        <!-- PHASE 1: ENTRY GATE -->
+        <section id="phase-1" class="phase active">
+            <div class="content-center">
+                <div class="entry-card">
+                    <p class="subtitle">Just for you...</p>
+                    <h1 class="title">Our New Year</h1>
+                    <p class="message">This surprise is only for you ❤️</p>
+                    <button id="btn-enter" class="btn-primary">
+                        Enter Our New Year
+                    </button>
+                    <div class="tap-hint">Tap to unlock</div>
+                </div>
+            </div>
+        </section>
+        <!-- PHASE 2: NEW YEAR WISH -->
+        <section id="phase-2" class="phase hidden">
+            <div class="content-center">
+                <h1 class="big-wish">Happy New Year ❤️</h1>
+                <div class="typewriter-container">
+                    <p id="wish-text"></p>
+                </div>
+                <!-- Music Toggle -->
+                <button id="music-toggle" class="btn-icon">
+                    🎵
+                </button>
+                <button id="btn-next-2" class="btn-text hidden">Continue →</button>
+            </div>
+        </section>
+        <!-- PHASE 3: WHY YOU'RE SPECIAL -->
+        <section id="phase-3" class="phase hidden">
+            <div class="content-center">
+                <h2 class="title">Why You're Special</h2>
+                <div class="grid-cards">
+                    <div class="card" onclick="flipCard(this)">
+                        <div class="card-front">?</div>
+                        <div class="card-back">Your Smile ✨</div>
+                    </div>
+                    <div class="card" onclick="flipCard(this)">
+                        <div class="card-front">?</div>
+                        <div class="card-back">Your Laugh 💖</div>
+                    </div>
+                    <div class="card" onclick="flipCard(this)">
+                        <div class="card-front">?</div>
+                        <div class="card-back">Your Heart ❤️</div>
+                    </div>
+                    <div class="card" onclick="flipCard(this)">
+                        <div class="card-front">?</div>
+                        <div class="card-back">Everything 🌟</div>
+                    </div>
+                </div>
+                <button id="btn-next-3" class="btn-text hidden" style="margin-top: 30px;">See Our Memories →</button>
+            </div>
+        </section>
+        <!-- PHASE 4: MEMORY SCATTER ZONE -->
+        <section id="phase-4" class="phase hidden">
+            <div class="scatter-container" id="scatter-zone">
+                <h2 class="subtitle floating-title" style="top: 10%; width: 100%;">Drag & Explore</h2>
+                <!-- Photos injected via JS -->
+            </div>
+            <div class="bottom-controls">
+                <button id="btn-next-4" class="btn-primary small-btn">View Albums →</button>
+            </div>
+        </section>
+        <!-- PHASE 5: MEMORY ALBUMS -->
+        <section id="phase-5" class="phase hidden">
+            <div class="albums-wrapper">
+                <h2 class="title">Our Memories</h2>
+                <div class="album-preview" onclick="openAlbum('cute')">
+                    <div class="album-cover" style="background-color: #ffccd5;">🧸</div>
+                    <h3>Cute Moments</h3>
+                </div>
+                <div class="album-preview" onclick="openAlbum('favorite')">
+                    <div class="album-cover" style="background-color: #ffb3c1;">✨</div>
+                    <h3>My Favorite You</h3>
+                </div>
+                <button id="btn-next-5" class="btn-text" style="margin-top: 2rem;">Continue to Fun Zone →</button>
+            </div>
+        </section>
+        <!-- ALBUM MODAL (Shared) -->
+        <div id="album-modal" class="modal hidden">
+            <button class="close-modal" onclick="closeAlbum()">✕</button>
+            <div class="modal-content" id="album-content">
+                <!-- Swiper content injected here -->
+            </div>
+        </div>
+        <!-- PHASE 6: PLAYFUL FUN ZONE -->
+        <section id="phase-6" class="phase hidden">
+            <div class="content-center">
+                <h2 class="title" style="font-size: 2.5rem;">Catch My Heart! ❤️</h2>
+                <div class="fun-container" id="fun-zone">
+                    <button id="catch-btn" class="floating-btn">❤️</button>
+                </div>
+                <p id="fun-msg" class="message hidden" style="margin-top: 2rem;">Gotcha! You're fast! 😉</p>
+                <button id="btn-next-6" class="btn-text hidden">My Gift for You →</button>
+            </div>
+        </section>
+        <!-- PHASE 7: MAIN SURPRISE GIFT -->
+        <section id="phase-7" class="phase hidden">
+            <div class="content-center">
+                <h2 class="title">A Gift For You</h2>
+                <div class="gift-container">
+                    <div id="gift-box" class="gift-box" onclick="tapGift()">
+                        🎁
+                    </div>
+                    <div class="progress-dots">
+                        <span class="dot" id="dot-1"></span>
+                        <span class="dot" id="dot-2"></span>
+                        <span class="dot" id="dot-3"></span>
+                    </div>
+                </div>
+                <p class="tap-hint">Tap 3 times to open...</p>
+            </div>
+        </section>
+        <!-- PHASE 8: CAKE & CANDLE -->
+        <section id="phase-8" class="phase hidden">
+            <div class="content-center">
+                <h2 class="title">Make a Wish ✨</h2>
+                <div class="cake-container" onclick="blowCandle()">
+                    <div class="cake">
+                        <div class="candle">
+                            <div class="flame" id="flame">🔥</div>
+                        </div>
+                        🎂
+                    </div>
+                </div>
+                <p class="message" id="cake-msg">Tap the flame to blow it out!</p>
+                <button id="btn-next-8" class="btn-primary hidden">Read My Message →</button>
+            </div>
+            <canvas id="confetti-canvas"></canvas>
+        </section>
+        <!-- PHASE 9: MESSAGE CARD EXPLOSION -->
+        <section id="phase-9" class="phase hidden">
+            <div class="explosion-container" id="card-explosion">
+                <!-- Cards injected via JS -->
+            </div>
+            <button id="btn-next-9" class="btn-text" style="position: absolute; bottom: 30px; z-index: 100;">One final
+                thing... →</button>
+        </section>
+        <!-- PHASE 10: FINAL LOVE NOTE & REPLAY -->
+        <section id="phase-10" class="phase hidden">
+            <div class="content-center">
+                <div class="heart-album-shape">
+                    ❤️
+                </div>
+                <h1 class="big-wish">My Promise to You</h1>
+                <div class="message"
+                    style="font-size: 1.1rem; max-height: 300px; overflow-y: auto; padding: 20px; background: rgba(255,255,255,0.7); border-radius: 20px; text-align: left;">
+                    <p>To my everything,</p>
+                    <br>
+                    <p>Thank you for staying with me through everything. Thank you for supporting me when I was down,
+                        and for understanding me even when I didn't say a word.</p>
+                    <br>
+                    <p>You are my rock, my safe place, and my greatest joy. I want you to know that I will always love
+                        you, forever and always. No matter what comes our way, I promise to stand by your side, just as
+                        you have stood by mine.</p>
+                    <br>
+                    <p>Here's to us, to our love, and to a lifetime of "Happy New Years" together.</p>
+                </div>
+                <div class="final-buttons">
+                    <button class="btn-primary" onclick="location.reload()">Replay Surprise ↺</button>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- AUDIO -->
+    <audio id="bg-music" loop>
+        <source src="https://cdn.pixabay.com/audio/2022/10/25/audio_1730594895.mp3" type="audio/mpeg">
+    </audio>
+    <script>
+        console.log("Romantic Surprise Loaded ❤️");
+        // ERROR CHECK
+        window.onerror = function (msg, url, line, col, error) {
+            alert("An error occurred: " + msg + "\nIf animations don't work, please check your internet connection (needed for GSAP library).");
+        };
+        if (typeof gsap === 'undefined') {
+            alert("GSAP library not loaded! The animations will not work without internet.");
+        }
+        // GLOBAL STATE
+        const state = {
+            currentPhase: 1,
+            audioPlaying: false,
+        };
+        // ELEMENTS
+        const bgMusic = document.getElementById('bg-music');
+        const app = document.getElementById('app');
+        // TEXT CONTENT FOR PHASE 2
+        const wishMessages = [
+            "As the clock strikes midnight...",
+            "I just want to say...",
+            "You are the best thing that ever happened to me.",
+            "Here is to another year of us. ❤️"
+        ];
+        // INIT
+        function init() {
+            setupEventListeners();
+            animatePhase1Entry();
+        }
+        function setupEventListeners() {
+            // Phase 1 -> 2
+            document.getElementById('btn-enter').addEventListener('click', () => {
+                goToPhase(2);
+                tryPlayMusic();
+            });
+            // Phase 2 Music Toggle
+            document.getElementById('music-toggle').addEventListener('click', toggleMusic);
+            // Phase 2 -> 3
+            document.getElementById('btn-next-2').addEventListener('click', () => {
+                goToPhase(3);
+            });
+            // Phase 3 -> 4
+            document.getElementById('btn-next-3').addEventListener('click', () => {
+                goToPhase(4);
+            });
+            // Phase 4 -> 5
+            document.getElementById('btn-next-4').addEventListener('click', () => {
+                goToPhase(5);
+            });
+            // Phase 5 -> 6
+            document.getElementById('btn-next-5').addEventListener('click', () => {
+                goToPhase(6);
+            });
+            // Phase 6 -> 7
+            document.getElementById('btn-next-6').addEventListener('click', () => {
+                goToPhase(7);
+            });
+            // Phase 8 -> 9
+            document.getElementById('btn-next-8').addEventListener('click', () => {
+                goToPhase(9);
+            });
+            // Phase 9 -> 10
+            document.getElementById('btn-next-9').addEventListener('click', () => {
+                goToPhase(10);
+            });
+            // Phase 6 Game
+            const catchBtn = document.getElementById('catch-btn');
+            catchBtn.addEventListener('click', () => {
+                catchBtn.style.pointerEvents = 'none'; // Only catch once
+                document.getElementById('fun-msg').classList.remove('hidden');
+                gsap.to(catchBtn, { scale: 2, duration: 0.5, ease: "elastic.out" });
+                setTimeout(() => {
+                    document.getElementById('btn-next-6').classList.remove('hidden');
+                    document.getElementById('btn-next-6').classList.add('btn-text');
+                }, 1000);
+            });
+            // Simple runaway logic for Phase 6
+            catchBtn.addEventListener('mouseover', () => {
+                if (catchBtn.style.pointerEvents === 'none') return;
+                // 50% chance to run away
+                if (Math.random() > 0.5) {
+                    const x = Math.random() * 200 - 100;
+                    const y = Math.random() * 100 - 50;
+                    gsap.to(catchBtn, { x: x, y: y, duration: 0.2 });
+                }
+            });
+        }
+        function tryPlayMusic() {
+            if (!state.audioPlaying) {
+                bgMusic.volume = 0.3;
+                bgMusic.play().then(() => {
+                    state.audioPlaying = true;
+                }).catch(e => {
+                    console.log("Auto-play blocked, waiting for interaction");
+                });
+            }
+        }
+        function toggleMusic() {
+            if (bgMusic.paused) {
+                bgMusic.play();
+                state.audioPlaying = true;
+            } else {
+                bgMusic.pause();
+                state.audioPlaying = false;
+            }
+        }
+        // PHASE MANAGEMENT
+        function goToPhase(phaseNum) {
+            // Exit current
+            const currentPhaseEl = document.getElementById(`phase-${state.currentPhase}`);
+            gsap.to(currentPhaseEl, {
+                duration: 0.5,
+                opacity: 0,
+                y: -20,
+                onComplete: () => {
+                    currentPhaseEl.classList.add('hidden');
+                    currentPhaseEl.classList.remove('active');
+                    // Enter new
+                    state.currentPhase = phaseNum;
+                    const nextPhaseEl = document.getElementById(`phase-${phaseNum}`);
+                    nextPhaseEl.classList.remove('hidden');
+                    nextPhaseEl.classList.add('active');
+                    gsap.fromTo(nextPhaseEl, {
+                        opacity: 0,
+                        y: 20
+                    }, {
+                        duration: 0.8,
+                        opacity: 1,
+                        y: 0,
+                        onComplete: () => initPhaseSpecifics(phaseNum)
+                    });
+                }
+            });
+        }
+        function initPhaseSpecifics(phaseNum) {
+            if (phaseNum === 2) {
+                playTypewriter();
+            } else if (phaseNum === 4) {
+                initScatterZone();
+            } else if (phaseNum === 9) {
+                initExplosion();
+            } else if (phaseNum === 10) {
+                startConfetti();
+            }
+        }
+        // PHASE 1 ANIMATIONS
+        function animatePhase1Entry() {
+            const tl = gsap.timeline();
+            tl.from(".subtitle", { opacity: 0, y: 10, duration: 1, delay: 0.5 })
+                .from(".title", { opacity: 0, scale: 0.9, duration: 1, ease: "back.out(1.7)" }, "-=0.5")
+                .from(".message", { opacity: 0, y: 10, duration: 1 }, "-=0.5")
+                .from(".btn-primary", { opacity: 0, y: 20, duration: 0.8, ease: "elastic.out(1, 0.5)" }, "-=0.5")
+                .from(".tap-hint", { opacity: 0, duration: 1 }, "-=0.2");
+        }
+        // PHASE 2 ANIMATIONS
+        function playTypewriter() {
+            const container = document.getElementById('wish-text');
+            let msgIndex = 0;
+            function showNextMessage() {
+                if (msgIndex >= wishMessages.length) {
+                    // Done
+                    gsap.to("#btn-next-2", { opacity: 1, visibility: 'visible', duration: 1, className: "btn-text" }); // Remove hidden
+                    return;
+                }
+                const msg = wishMessages[msgIndex];
+                container.innerHTML = "";
+                container.style.opacity = 1;
+                // Simple fade in for now, can be true typewriter later
+                container.textContent = msg;
+                gsap.fromTo(container,
+                    { opacity: 0, y: 10 },
+                    {
+                        opacity: 1, y: 0, duration: 1, onComplete: () => {
+                            setTimeout(() => {
+                                gsap.to(container, {
+                                    opacity: 0,
+                                    y: -10,
+                                    duration: 0.5,
+                                    onComplete: () => {
+                                        msgIndex++;
+                                        showNextMessage();
+                                    }
+                                })
+                            }, 2000); // Read time
+                        }
+                    }
+                );
+            }
+            showNextMessage();
+        }
+        // PHASE 3: CARDS
+        let flippedCount = 0;
+        function flipCard(card) {
+            if (card.classList.contains('flipped')) return;
+            card.classList.add('flipped');
+            flippedCount++;
+            // Play gentle sound?
+            if (flippedCount === 4) {
+                gsap.to("#btn-next-3", { opacity: 1, visibility: 'visible', className: "btn-text", duration: 1, delay: 0.5 });
+            }
+        }
+        // PHASE 4: SCATTER ZONE
+        const photos = [
+            { id: 1, color: '#ffadad' },
+            { id: 2, color: '#ffd6a5' },
+            { id: 3, color: '#fdffb6' },
+            { id: 4, color: '#caffbf' },
+            { id: 5, color: '#9bf6ff' },
+            { id: 6, color: '#a0c4ff' },
+            { id: 7, color: '#bdb2ff' },
+            { id: 8, color: '#ffc6ff' },
+            { id: 9, color: '#fffffc' },
+            { id: 10, color: '#ffcfd2' },
+            { id: 11, color: '#fde4cf' },
+            { id: 12, color: '#fbf8cc' }
+        ];
+        function initScatterZone() {
+            const container = document.getElementById('scatter-zone');
+            // Clear existing to avoid dupes if re-entering
+            container.innerHTML = '<h2 class="subtitle floating-title" style="top: 10%; width: 100%;">Drag & Explore (Tap heart to like!)</h2>';
+            photos.forEach((photo, index) => {
+                const el = document.createElement('div');
+                el.classList.add('photo-card');
+                // Random styling to make them look like scattered polaroids
+                const randomX = Math.random() * (window.innerWidth - 160);
+                const randomY = Math.random() * (window.innerHeight - 240) + 50;
+                const randomR = Math.random() * 40 - 20;
+                el.style.left = `${Math.max(10, Math.min(window.innerWidth - 150, randomX))}px`;
+                el.style.top = `${Math.max(50, Math.min(window.innerHeight - 200, randomY))}px`;
+                el.style.setProperty('--r', `${randomR}deg`);
+                // Inner content
+                el.innerHTML = `
+                <div class="photo-img" style="background-color: ${photo.color}"></div>
+                <button class="like-btn" onclick="likePhoto(this)">🤍</button>
+            `;
+                container.appendChild(el);
+                // Intro animation
+                gsap.from(el, {
+                    scale: 0,
+                    opacity: 0,
+                    duration: 0.5,
+                    delay: index * 0.05,
+                    ease: "back.out(1.5)"
+                });
+            });
+            // Make draggable
+            Draggable.create(".photo-card", {
+                bounds: window,
+                inertia: true,
+                onDragStart: function () {
+                    gsap.to(this.target, { scale: 1.1, zIndex: 100, duration: 0.2 });
+                },
+                onDragEnd: function () {
+                    // Return to normal scale but keep z-index if it was high, or reset? 
+                    // Let's reset z-index but if liked it might have specific style
+                    if (!this.target.classList.contains('liked')) {
+                        gsap.to(this.target, { scale: 1, zIndex: 1, duration: 0.2 });
+                    } else {
+                        gsap.to(this.target, { scale: 1.05, zIndex: 50, duration: 0.2 });
+                    }
+                }
+            });
+            // Show button after a few seconds
+            setTimeout(() => {
+                gsap.fromTo("#btn-next-4", { opacity: 0, y: 20 }, { opacity: 1, y: 0, visibility: 'visible' });
+            }, 2000);
+        }
+        function likePhoto(btn) {
+            const card = btn.parentElement;
+            if (card.classList.contains('liked')) {
+                // Unlike
+                card.classList.remove('liked');
+                btn.textContent = "🤍";
+                gsap.to(card, { scale: 1, zIndex: 1, duration: 0.2 });
+            } else {
+                // Like
+                card.classList.add('liked');
+                btn.textContent = "❤️";
+                // Pulse animation
+                gsap.fromTo(btn, { scale: 1.5 }, { scale: 1, duration: 0.5, ease: "elastic.out" });
+            }
+        }
+        // PHASE 5: ALBUMS
+        function openAlbum(type) {
+            const modal = document.getElementById('album-modal');
+            const content = document.getElementById('album-content');
+            content.innerHTML = ""; // Clear
+            let items = 5; // Placeholder count
+            for (let i = 0; i < items; i++) {
+                const div = document.createElement('div');
+                div.className = 'album-photo';
+                div.textContent = type === 'cute' ? `🧸 ${i + 1}` : `✨ ${i + 1}`;
+                content.appendChild(div);
+            }
+            modal.classList.remove('hidden');
+            gsap.fromTo(modal, { opacity: 0 }, { opacity: 1, duration: 0.3 });
+        }
+        function closeAlbum() {
+            const modal = document.getElementById('album-modal');
+            gsap.to(modal, {
+                opacity: 0,
+                duration: 0.3,
+                onComplete: () => modal.classList.add('hidden')
+            });
+        }
+        // PHASE 7: GIFT
+        let giftTaps = 0;
+        function tapGift() {
+            const gift = document.getElementById('gift-box');
+            giftTaps++;
+            // Shake animation
+            gsap.to(gift, { x: 10, duration: 0.1, yoyo: true, repeat: 5 });
+            // Update dots
+            if (giftTaps <= 3) {
+                document.getElementById(`dot-${giftTaps}`).classList.add('active');
+            }
+            if (giftTaps === 3) {
+                // Open
+                setTimeout(() => {
+                    gsap.to(gift, { scale: 5, opacity: 0, duration: 0.5 });
+                    goToPhase(8);
+                }, 500);
+            }
+        }
+        // PHASE 8: CAKE
+        function blowCandle() {
+            const flame = document.getElementById('flame');
+            if (flame.classList.contains('out')) return;
+            flame.classList.add('out');
+            document.getElementById('cake-msg').textContent = "Yay! Wish made! ✨";
+            // Confetti
+            startConfetti();
+            setTimeout(() => {
+                document.getElementById('btn-next-8').classList.remove('hidden');
+            }, 1500);
+        }
+        // PHASE 9: EXPLOSION
+        const loveNotes = [
+            "You are beautiful",
+            "You are smart",
+            "You are kind",
+            "You are funny",
+            "You are loved",
+            "Forever Us"
+        ];
+        function initExplosion() {
+            const container = document.getElementById('card-explosion');
+            container.innerHTML = "";
+            loveNotes.forEach((note, i) => {
+                const el = document.createElement('div');
+                el.className = 'msg-card';
+                el.textContent = note;
+                // Random pos centered
+                el.style.left = '50%';
+                el.style.top = '50%';
+                el.style.transform = 'translate(-50%, -50%)';
+                container.appendChild(el);
+                // Explode out
+                const angle = (i / loveNotes.length) * Math.PI * 2;
+                const dist = 100 + Math.random() * 100;
+                const x = Math.cos(angle) * dist;
+                const y = Math.sin(angle) * dist;
+                gsap.to(el, {
+                    x: x,
+                    y: y,
+                    opacity: 1,
+                    rotation: Math.random() * 20 - 10,
+                    duration: 1,
+                    delay: i * 0.2,
+                    ease: "back.out(1.7)"
+                });
+            });
+        }
+        // UTIL: CONFETTI (Simple implementation)
+        function startConfetti() {
+            // Just a quick burst visual for now, or canvas
+            // For simplicity, we can just trigger a CSS class or simple particle system
+            // But since canvas is there...
+            const canvas = document.getElementById('confetti-canvas');
+            if (!canvas) return; // Only in phase 8
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const particles = [];
+            for (let i = 0; i < 50; i++) {
+                particles.push({
+                    x: window.innerWidth / 2,
+                    y: window.innerHeight / 2,
+                    vx: (Math.random() - 0.5) * 10,
+                    vy: (Math.random() - 0.5) * 10,
+                    color: `hsl(${Math.random() * 360}, 100%, 50%)`
+                });
+            }
+            function draw() {
+                if (!canvas.parentElement) return; // Stop if canvas removed
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.2; // gravity
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(p.x, p.y, 5, 5);
+                });
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+        // START
+        window.onload = init;
+    </script>
+</body>
+
+</html>
